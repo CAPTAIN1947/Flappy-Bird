@@ -1,0 +1,29 @@
+name: emsdk_build
+on: [workflow_dispatch]
+
+jobs:
+  # Build job. Builds app for web with emsdk
+  build-android:
+    name: Build for Emscripten
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Checkout
+      run: |
+            WD=$(pwd)
+            python3 -V
+            echo $WD
+            clang --version | head -n 1
+            echo
+            grep "^Pkg.Revision =" ${ANDROID_HOME}/ndk-bundle/source.properties
+            sudo apt-get update
+            sudo apt-get install bash wget
+            cd /home/runner/work/Flappy-Bird
+            git checkout https://github.com/pmp-p/python-wasm-plus.git
+            mv Flappy-Bird python-wasm-plus/demos/gh.captain1947.flappybird
+            cd python-wasm-plus
+            bash ./python-wasm-plus.sh
+            bash ./buildapp.sh templates/no-worker-fs demos/gh.captain1947.flappybird demo
+            find build/demo
+
