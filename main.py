@@ -71,7 +71,7 @@ while rng:
     pipes.physics(dt, player)
     scene.physics(dt, player.pos.x)
     if player.state != "idle":
-        hud.physics(int(clock.get_fps()))
+        hud.physics(player.score)
     if player.state == "died":
         gameover_menu.physics()
 
