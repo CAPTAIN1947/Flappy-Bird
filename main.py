@@ -16,7 +16,7 @@ try:
     import android
 except ImportError:
     __ANDROID__ = False
-__ANDROID__ = True
+
 
 SCREENW = 512
 SCREENH = 384
