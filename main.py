@@ -24,6 +24,7 @@ if __ANDROID__:
     window = sdl2.Window(settings.TITLE, (0, 0), fullscreen = True)
 else:
     window = sdl2.Window(settings.TITLE, (SCREENW, SCREENH))
+    window.set_icon(pygame.image.load("icon.png"))
 
 
 renderer = sdl2.Renderer(window, accelerated = True)
