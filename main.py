@@ -39,7 +39,7 @@ def reset():
     gameover_menu.reset()
 
 # Main part of the game starts from here
-FPS = 1000
+FPS = 60
 
 rng = True
 state = "not started"
