@@ -5,6 +5,7 @@ import pygame._sdl2 as sdl2
 
 import settings
 
+
 class Player:
     POSX = 100
     VELX = 100
@@ -19,6 +20,7 @@ class Player:
         self.vely = self.INITIAL_VELY
 
         self.load_texture()
+        self.load_sound()
 
         self.animation_factor  = 0
         self.state = "idle"
@@ -40,9 +42,15 @@ class Player:
             )
         self.rect.centery = self.pos.y
 
+    def load_sound(self):
+        self.wings_sound = pygame.mixer.Sound(
+            path.join(settings.ASSETS_PATH, "wings.wav")
+            )
+
     def events(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and self.state not in ("collided", "died"):
             self.vely = self.UP_VEL
+            self.wings_sound.play()
             self.state = "moving"
 
     def physics(self, dt, base_height):

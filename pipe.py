@@ -74,6 +74,7 @@ class Pipes:
         self.renderer = renderer
 
         self.load_textures()
+        self.load_sound()
 
         self.is_game_started = False
         self.current_pipe_id = 0
@@ -90,6 +91,14 @@ class Pipes:
 
         self.rect = self.pipe_down_texture.get_rect()
 
+    def load_sound(self):
+        self.crash_sound = pygame.mixer.Sound(
+            path.join(settings.ASSETS_PATH, "crash.wav")
+            )
+        self.score_sound = pygame.mixer.Sound(
+            path.join(settings.ASSETS_PATH, "score.wav")
+            )
+
     def physics(self, dt, player):
         self.pipe_creation(player.state)
         pipes_to_delete = []
@@ -97,9 +106,11 @@ class Pipes:
             self.pipes[_id].physics(dt, player.VELX, player.state)
             if self.pipes[_id].check_if_crossed_player(player.POSX):
                 player.score += 1
+                self.score_sound.play()
             if self.pipes[_id].collide_with_player(player.rect):
                 if player.state not in ("collided", "died"):
                     player.state = "collided"
+                    self.crash_sound.play()
             if self.pipes[_id].is_out_of_screen():
                 pipes_to_delete.append(_id)
         for _id in pipes_to_delete:
