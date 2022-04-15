@@ -93,9 +93,11 @@ class GameOverMenu:
         self.mouse_over_button = False
 
     def button_clicked(self, event):
-        self.mouse_over_button = self.button_bounding_rect.collidepoint(
-            pygame.mouse.get_pos()
-            )
+        if event.type == pygame.MOUSEMOTION:
+            self.mouse_over_button = self.button_bounding_rect.collidepoint(
+                event.pos
+                )
+
         if event.type == pygame.MOUSEBUTTONDOWN and self.mouse_over_button:
             return True
         else:

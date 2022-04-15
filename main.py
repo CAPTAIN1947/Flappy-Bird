@@ -16,12 +16,13 @@ try:
     import android
 except ImportError:
     __ANDROID__ = False
+__ANDROID__ = True
 
 SCREENW = 512
 SCREENH = 384
 
 if __ANDROID__:
-    window = sdl2.Window(settings.TITLE, (0, 0), fullscreen = True)
+    window = sdl2.Window(settings.TITLE, (0, 0), fullscreen_desktop = True)
 else:
     window = sdl2.Window(settings.TITLE, (SCREENW, SCREENH))
     window.set_icon(pygame.image.load("icon.png"))
