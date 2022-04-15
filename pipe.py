@@ -24,8 +24,13 @@ class Pipe:
         self.lower_rect.topleft = self.gap_rect.bottomleft
         self.upper_rect.bottomleft = self.gap_rect.topleft
 
+        self.crossed_player = False
+
+    def __str__(self):
+        return "pos: {}, {}".format(self.pos.x, self.pos.y)
+
     def physics(self, dt, player_velx, player_state):
-        if player_state != "collided":
+        if player_state not in ("collided", "died"):
             self.pos.x -= player_velx * dt
         self.lower_rect.left = self.upper_rect.left = self.gap_rect.left = self.pos.x
 
@@ -50,6 +55,13 @@ class Pipe:
 
     def is_out_of_screen(self):
         if self.gap_rect.right < 0:
+            return True
+        else:
+            return False
+
+    def check_if_crossed_player(self, player_posx):
+        if not self.crossed_player and self.pos.x < player_posx:
+            self.crossed_player = True
             return True
         else:
             return False
@@ -83,8 +95,11 @@ class Pipes:
         pipes_to_delete = []
         for _id in self.pipes:
             self.pipes[_id].physics(dt, player.VELX, player.state)
+            if self.pipes[_id].check_if_crossed_player(player.POSX):
+                player.score += 1
             if self.pipes[_id].collide_with_player(player.rect):
-                player.state = "collided"
+                if player.state not in ("collided", "died"):
+                    player.state = "collided"
             if self.pipes[_id].is_out_of_screen():
                 pipes_to_delete.append(_id)
         for _id in pipes_to_delete:
@@ -98,6 +113,12 @@ class Pipes:
                 self.pipe_down_texture
                 )
 
+    def reset(self):
+        self.is_game_started = False
+        self.current_pipe_id = 0
+        self.last_pipe = None
+
+        self.pipes = {}
 
     def pipe_creation(self, player_state):
         if not self.is_game_started:

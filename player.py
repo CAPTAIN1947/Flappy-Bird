@@ -9,7 +9,7 @@ class Player:
     POSX = 100
     VELX = 100
     INITIAL_VELY = 0
-    UP_VEL = 300
+    UP_VEL = 200
     G_ACC = -500
     def __init__(self, screenw, screenh, renderer):
         self.screenw, self.screenh = screenw, screenh
@@ -22,6 +22,7 @@ class Player:
 
         self.animation_factor  = 0
         self.state = "idle"
+        self.score = 0
 
     def load_texture(self):
         image = pygame.image.load(path.join(settings.ASSETS_PATH, "player.png"))
@@ -40,7 +41,7 @@ class Player:
         self.rect.centery = self.pos.y
 
     def events(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN and self.state != "collided":
+        if event.type == pygame.MOUSEBUTTONDOWN and self.state not in ("collided", "died"):
             self.vely = self.UP_VEL
             self.state = "moving"
 
@@ -48,7 +49,7 @@ class Player:
         if self.state !="idle":
             self.move_vertically(dt)
             self.clamp_pos(base_height)
-        if self.state != "collided":
+        if self.state not in ("collided", "died"):
             self.move_horizontally(dt)
         self.animate(dt, self.sprite_sheet)
 
@@ -60,6 +61,15 @@ class Player:
             self.rect,
             pygame.Rect(*self.get_sprite_pos(self.sprite_sheet), self.rect.w, self.rect.h),
             )
+
+    def reset(self):
+        self.animation_factor  = 0
+        self.state = "idle"
+        self.score = 0
+
+        self.pos = pygame.Vector2(self.POSX, self.screenh / 2)
+        self.vely = self.INITIAL_VELY
+        self.rect.centery = self.pos.y
 
     def animate(self, dt, sprite_sheet):
         self.animation_factor = (
@@ -90,3 +100,5 @@ class Player:
         elif self.rect.bottom > self.screenh - base_height:
             self.rect.bottom = self.screenh - base_height
             self.pos.y = self.rect.centery
+            if self.state == "collided":
+                self.state = "died"

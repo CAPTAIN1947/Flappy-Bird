@@ -1,10 +1,11 @@
 import pygame
 import pygame._sdl2 as sdl2
 
-from player import Player
+from hud import HUD
 from pipe import Pipes
 from scene import Scene
-from menus import MainMenu
+from player import Player
+from menus import MainMenu, GameOverMenu
 
 
 pygame.init()
@@ -32,8 +33,13 @@ if __ANDROID__:
     renderer.logical_size = SCREENW, SCREENH
 
 
+def reset():
+    player.reset()
+    pipes.reset()
+    gameover_menu.reset()
+
 # Main part of the game starts from here
-FPS = 6000
+FPS = 1000
 
 rng = True
 state = "not started"
@@ -43,6 +49,8 @@ player = Player(SCREENW, SCREENH, renderer)
 pipes = Pipes(SCREENW, SCREENH, renderer)
 scene = Scene(SCREENW, SCREENH, renderer, player.POSX)
 main_menu = MainMenu(SCREENW, SCREENH, renderer)
+hud = HUD(SCREENW, SCREENH, renderer)
+gameover_menu = GameOverMenu(SCREENW, SCREENH, renderer)
 
 while rng:
     dt = clock.tick(FPS) / 1000
@@ -56,11 +64,17 @@ while rng:
             if event.key == pygame.K_ESCAPE:
                 rng = False
         player.events(event)
+        if player.state == "died" and gameover_menu.button_clicked(event):
+            reset()
 
     # Handle the events
     player.physics(dt, scene.base_rect.h)
     pipes.physics(dt, player)
     scene.physics(dt, player.pos.x)
+    if player.state != "idle":
+        hud.physics(player.score)
+    if player.state == "died":
+        gameover_menu.physics()
 
     # Draw
     renderer.draw_color = (0, 0, 0, 255) # Set the draw colour
@@ -71,4 +85,8 @@ while rng:
     scene.draw_base()
     if player.state == "idle":
         main_menu.draw()
+    else:
+        hud.draw()
+    if player.state == "died":
+        gameover_menu.draw()
     renderer.present() # Update the screen
