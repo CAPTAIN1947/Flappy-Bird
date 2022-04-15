@@ -39,8 +39,6 @@ def reset():
     gameover_menu.reset()
 
 # Main part of the game starts from here
-FPS = 60
-
 rng = True
 state = "not started"
 clock = pygame.time.Clock()
@@ -53,7 +51,7 @@ hud = HUD(SCREENW, SCREENH, renderer)
 gameover_menu = GameOverMenu(SCREENW, SCREENH, renderer)
 
 while rng:
-    dt = clock.tick(FPS) / 1000
+    dt = clock.tick(settings.FPS) / 1000
 
     # The cool pygame(SDL) event loop
     for event in pygame.event.get():
