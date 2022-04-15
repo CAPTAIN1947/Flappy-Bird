@@ -1,2 +1,2 @@
-# Tic-Tac-Toe
-A Tic-Tac-Toe game made with pygame.
+# FLappy Bird
+A simple flappy bird game made with ``pygame`` and ``pygame._sdl2``.

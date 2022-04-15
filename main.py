@@ -1,6 +1,7 @@
 import pygame
 import pygame._sdl2 as sdl2
 
+import settings
 from hud import HUD
 from pipe import Pipes
 from scene import Scene
@@ -15,17 +16,15 @@ try:
     import android
 except ImportError:
     __ANDROID__ = False
+__ANDROID__ = True
 
-
-MONITORW = 1920
-MONITORH = 1080
 SCREENW = 512
 SCREENH = 384
 
 if __ANDROID__:
-    window = sdl2.Window("Flappy Bird", (MONITORW, MONITORH), fullscreen = True)
+    window = sdl2.Window(settings.TITLE, (0, 0), fullscreen = True)
 else:
-    window = sdl2.Window("Flappy Bird", (SCREENW, SCREENH))
+    window = sdl2.Window(settings.TITLE, (SCREENW, SCREENH))
 
 
 renderer = sdl2.Renderer(window, accelerated = True)
@@ -54,7 +53,6 @@ gameover_menu = GameOverMenu(SCREENW, SCREENH, renderer)
 
 while rng:
     dt = clock.tick(FPS) / 1000
-    # print(clock.get_fps())
 
     # The cool pygame(SDL) event loop
     for event in pygame.event.get():

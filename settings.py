@@ -8,4 +8,4 @@ ROOT_PATH = path.abspath(".")
 ASSETS_PATH = path.join(ROOT_PATH, "Assets")
 
 # Audio volume
-VOLUME = 50 # In the range of 0 - 100
+VOLUME = 100 # In the range of 0 - 100

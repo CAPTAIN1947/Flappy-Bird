@@ -19,7 +19,7 @@ for i in range(10):
     chars[i] = (text, rect, bounding_rect)
 surf = pg.Surface((width * len(chars), height))
 surf.fill((255, 255, 255, 0))
-print(width, height)
+
 for i in chars:
     chars[i][2].x = i * width
     chars[i][1].center = chars[i][2].center

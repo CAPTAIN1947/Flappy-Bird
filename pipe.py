@@ -45,10 +45,6 @@ class Pipe:
             self.lower_rect,
             self.tex_rect
             )
-        renderer.draw_color = (255, 0, 0, 255)
-        renderer.draw_rect(
-            self.upper_rect
-            )
 
     def collide_with_player(self, player_rect):
         return self.upper_rect.colliderect(player_rect) or self.lower_rect.colliderect(player_rect)
@@ -69,6 +65,8 @@ class Pipe:
 class Pipes:
     CORRESPONDING_PIPE_DISTANCE = 150
     PIPE_CREATION_HEIGHT_RANGE = (150, 250)
+    CRASH_SOUND_VOL = 0.008
+    SCORE_SOUND_VOL = 0.002
     def __init__(self, screenw, screenh, renderer):
         self.screenw, self.screenh = screenw, screenh
         self.renderer = renderer
@@ -95,9 +93,11 @@ class Pipes:
         self.crash_sound = pygame.mixer.Sound(
             path.join(settings.ASSETS_PATH, "crash.wav")
             )
+        self.crash_sound.set_volume(self.CRASH_SOUND_VOL * settings.VOLUME)
         self.score_sound = pygame.mixer.Sound(
             path.join(settings.ASSETS_PATH, "score.wav")
             )
+        self.score_sound.set_volume(self.SCORE_SOUND_VOL * settings.VOLUME)
 
     def physics(self, dt, player):
         self.pipe_creation(player.state)

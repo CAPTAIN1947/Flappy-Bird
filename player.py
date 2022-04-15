@@ -12,6 +12,7 @@ class Player:
     INITIAL_VELY = 0
     UP_VEL = 200
     G_ACC = -500
+    WINGS_SOUND_VOL = 0.004
     def __init__(self, screenw, screenh, renderer):
         self.screenw, self.screenh = screenw, screenh
         self.renderer = renderer
@@ -46,6 +47,7 @@ class Player:
         self.wings_sound = pygame.mixer.Sound(
             path.join(settings.ASSETS_PATH, "wings.wav")
             )
+        self.wings_sound.set_volume(self.WINGS_SOUND_VOL * settings.VOLUME)
 
     def events(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and self.state not in ("collided", "died"):
@@ -62,8 +64,6 @@ class Player:
         self.animate(dt, self.sprite_sheet)
 
     def draw(self):
-        self.renderer.draw_color = (255, 255, 0, 255)
-        self.renderer.draw_rect(self.rect)
         self.renderer.blit(
             self.sprite_sheet["sheet"],
             self.rect,

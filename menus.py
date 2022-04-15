@@ -10,11 +10,11 @@ from helpers import *
 
 class MainMenu:
     TITLE_TEXT_SIZE = 40
-    TITLE_TEXT_COLOUR = "Red"
+    TITLE_TEXT_COLOUR = "Brown"
     TITLE_POSY = 60
     INSTRUCTION_TEXT = "TAP or CLICK to Play"
     INSTRUCTION_TEXT_SIZE = 20
-    INSTRUCTION_TEXT_COLOUR = "Green"
+    INSTRUCTION_TEXT_COLOUR = (93, 230, 80, 255)
     INSTRUCTION_POSY = 300
     def __init__(self, screenw, screenh, renderer):
         self.screenw, self.screenh = screenw, screenh
@@ -55,14 +55,14 @@ class MainMenu:
 class GameOverMenu:
     TITLE_TEXT = "Game Over"
     TITLE_TEXT_SIZE = 40
-    TITLE_TEXT_COLOUR = "Gray"
+    TITLE_TEXT_COLOUR = "Brown"
     TITLE_POSY = 200
     BUTTON_TEXT = "Restart"
     BUTTON_TEXT_SIZE = 30
-    BUTTON_TEXT_COLOUR = "Green"
+    BUTTON_TEXT_COLOUR = (50, 50, 50, 255)
     BUTTON_POSY = 300
-    BUTTON_NORMAL_COLOUR = (0, 255, 255, 255)
-    BUTTON_HOVER_COLOUR = (0, 0, 255, 255)
+    BUTTON_NORMAL_COLOUR = (230, 219, 67, 255)
+    BUTTON_HOVER_COLOUR = (0, 0, 0, 255)
     BUTTON_INFLATE_FACTOR = (10, 10)
     def __init__(self, screenw, screenh, renderer):
         self.screenw, self.screenh = screenw, screenh
@@ -93,7 +93,7 @@ class GameOverMenu:
         self.mouse_over_button = False
 
     def button_clicked(self, event):
-        self.mouse_over_button = self.button_rect.collidepoint(
+        self.mouse_over_button = self.button_bounding_rect.collidepoint(
             pygame.mouse.get_pos()
             )
         if event.type == pygame.MOUSEBUTTONDOWN and self.mouse_over_button:
