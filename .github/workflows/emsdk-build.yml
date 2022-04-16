@@ -17,9 +17,8 @@ jobs:
             clang --version | head -n 1
             echo
             grep "^Pkg.Revision =" ${ANDROID_HOME}/ndk-bundle/source.properties
-            mkdir /home/runner/work/Flappy-Bird/build
-            cd /home/runner/work/Flappy-Bird/build
-            git checkout https://github.com/pmp-p/python-wasm-plus.git
+            cd /home/runner/work/Flappy-Bird
+            git clone https://github.com/pmp-p/python-wasm-plus.git
             mv Flappy-Bird python-wasm-plus/demos/gh.captain1947.flappybird
             cd python-wasm-plus
             bash ./python-wasm-plus.sh
