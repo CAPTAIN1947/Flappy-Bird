@@ -19,9 +19,11 @@ jobs:
             grep "^Pkg.Revision =" ${ANDROID_HOME}/ndk-bundle/source.properties
             cd /home/runner/work/Flappy-Bird
             git clone https://github.com/pmp-p/python-wasm-plus.git
-            mv Flappy-Bird python-wasm-plus/demos/gh.captain1947.flappybird
+            ln -s $(pwd)/Flappy-Bird python-wasm-plus/demos/gh.captain1947.flappybird
             cd python-wasm-plus
             bash ./python-wasm-plus.sh
             bash ./buildapp.sh templates/no-worker-fs demos/gh.captain1947.flappybird demo
-            find build/demo
+            cd demos/gh.captain1947.flappybird
+            ../../scripts/re-pack-apk.sh demo
+            find ../../build/demo
 
