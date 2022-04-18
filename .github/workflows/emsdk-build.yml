@@ -29,6 +29,8 @@ jobs:
             pwd
             echo "==================="
             cd $GITHUB_WORKSPACE/../python-wasm-plus/build
+            mv demo $GITHUB_WORKSPACE/
+            cd $GITHUB_WORKSPACE/
             pwd
             ls -al demo
             du -hs demo/*
