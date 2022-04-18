@@ -25,7 +25,10 @@ jobs:
             bash ./python-wasm-plus.sh
             bash ./buildapp.sh templates/no-worker-fs demos/$PROJECT demo
             cd $GITHUB_WORKSPACE/../python-wasm-plus/demos/$PROJECT
-            bash ../../scripts/re-pack-apk.sh demo
+            echo "==================="
+            pwd
+            echo "==================="
             cd $GITHUB_WORKSPACE/../python-wasm-plus/build/demo
+            pwd
             ls -al
             du -hs *
