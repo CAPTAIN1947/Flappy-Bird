@@ -3,7 +3,7 @@ on: [workflow_dispatch]
 
 jobs:
   # Build job. Builds app for web with emsdk
-  build-android:
+  build-emsdk:
     name: Build for Emscripten
     runs-on: ubuntu-latest
 
@@ -28,7 +28,14 @@ jobs:
             echo "==================="
             pwd
             echo "==================="
-            cd $GITHUB_WORKSPACE/../python-wasm-plus/build/demo
+            cd $GITHUB_WORKSPACE/../python-wasm-plus/build
             pwd
-            ls -al
-            du -hs *
+            ls -al demo
+            du -hs demo/*
+
+
+    - name : "Upload to GitHub pages"
+      uses: JamesIves/github-pages-deploy-action@4.1.7
+      with:
+        branch: gh-pages
+        folder: demo
