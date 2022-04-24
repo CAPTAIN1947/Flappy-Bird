@@ -184,20 +184,21 @@ readline.complete = function (line) {
 
 export class WasmTerminal {
 
-  constructor() {
+  constructor(hostid, cols, rows) {
     this.input = ''
     this.resolveInput = null
     this.activeInput = true
     this.inputStartCursor = null
 
     this.xterm = new Terminal(
-      { scrollback: 10000, fontSize: 14, theme: { background: '#1a1c1f' }, cols: 100}
+      { scrollback: 10000, fontSize: 14, theme: { background: '#1a1c1f' }, cols: (cols || 100), rows: (rows || 25) }
     );
 
     const imageAddon = new ImageAddon.ImageAddon("./xtermjsixel/xterm-addon-image-worker.js", {sixelSupport: true});
 
     this.xterm.loadAddon(imageAddon);
-    this.xterm.open(document.getElementById('terminal'))
+    console.warn(hostid,cols,rows)
+    this.xterm.open(document.getElementById( 'terminal'))
 
     // hack to hide scrollbar inside box
     document.getElementsByClassName('xterm-viewport')[0].style.left="-15px"
@@ -380,6 +381,43 @@ export class WasmTerminal {
 register(WasmTerminal)
 
 // Browser FS ====================================================
+var VM
+
+async function mount_at(archive, path, relpath, hint) {
+
+    var BFS = new BrowserFS.EmscriptenFS()
+    relpath = relpath || '/'
+    hint = hint || archive
+
+    function apk_cb(e, apkfs){
+        console.log(__FILE__,"mounting",archive,"onto", path)
+
+        BrowserFS.FileSystem.InMemory.Create(
+            function(e, memfs) {
+                BrowserFS.FileSystem.OverlayFS.Create({"writable" :  memfs, "readable" : apkfs },
+                    function(e, ovfs) {
+                                BrowserFS.FileSystem.MountableFileSystem.Create({
+                                    '/' : ovfs
+                                    }, async function(e, mfs) {
+                                        await BrowserFS.initialize(mfs);
+                                        await VM.FS.mount(BFS, {root: relpath}, path );
+                                        console.log(hint," Mounted !")
+                                    })
+                    }
+                );
+            }
+        );
+    }
+
+    fetch(archive).then(function(response) {
+        return response.arrayBuffer();
+    }).then(function(zipData) {
+        BrowserFS.FileSystem.ZipFS.Create({"zipData" : VM.Buffer.from(zipData),"name": hint}, apk_cb)
+    })
+
+}
+register(mount_at)
+
 
 async function fshandler(VM) {
     console.log(__FILE__,"fshandler Begin")
@@ -391,6 +429,7 @@ async function fshandler(VM) {
     } catch (x) {
         console.info("/data/data aleady there");
     }
+
 
     if (VM.APK) {
         const assets = "/data/data/" + VM.APK + "/assets"
@@ -428,6 +467,7 @@ async function fshandler(VM) {
                                                 await VM.FS.mkdir("/data/data/" + VM.APK + "/need-preload");
                                                 console.log(VM.APK," Mounted !")
                                                 VM.vfs = BFS
+                                                VM.Buffer = Buffer
                                             })
                             }
                         );
@@ -455,7 +495,7 @@ async function fshandler(VM) {
 
 
 // Python WASM ===================================================
-var VM
+
 
 const modularized = (typeof python311 != 'undefined')
 
@@ -694,7 +734,9 @@ function pythonvm(canvasid, vterm) {
 
 
     if (modularized) {
-        python311(Module).then( async (VM) => {
+        python311(Module).then( async (vm) => {
+
+                VM = vm
 
                 // for backward compat
                 //window.Module = VM
@@ -710,6 +752,7 @@ function pythonvm(canvasid, vterm) {
             }
         );
     } else {
+        VM = Module
         window.Module = Module
         const jswasmloader=document.createElement('script')
         jswasmloader.setAttribute("type","text/javascript")
